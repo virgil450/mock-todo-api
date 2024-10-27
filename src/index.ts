@@ -8,6 +8,10 @@ import routes from "./routes/index";
 import errorHandler from "./helpers/errorHandler";
 // body parser
 import bodyParser from "body-parser";
+// rate limiter
+import rateLimit from 'express-rate-limit';
+// logger
+import morgan from 'morgan';
 
 const app = express();
 const port = process.env.PORT || 3080;
@@ -21,6 +25,18 @@ pool.connect((err) => {
     console.log("connected to database");
   }
 });
+
+
+const limiter = rateLimit({
+    windowMs: 24 * 60 * 60 * 1000, // 24 hours
+    max: 150, // limit each IP to 150 requests per windowMs
+});
+
+// Apply the rate limiting middleware
+app.use(limiter);
+
+// Logger
+app.use(morgan('dev'));
 
 // Middleware to parse JSON
 app.use(bodyParser.json());

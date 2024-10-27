@@ -44,7 +44,6 @@ const generateResponse = <T>(
     ...(data !== undefined ? { data } : {}),
     ...(errorDetails ? { error: errorDetails } : {}),
   };
-  console.log(response)
   res.status(status).json(response);
 };
 
