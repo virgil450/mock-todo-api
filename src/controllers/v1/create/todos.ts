@@ -16,7 +16,7 @@ export const createTodoController = async (req: express.Request, res: express.Re
 
   try {
     const schema = Joi.object({
-      title: Joi.string().trim().alphanum().min(3).max(30).required(),
+      title: Joi.string().trim().alphanum().min(3).max(255).required(),
       description: Joi.string().trim().allow(""),
     });
 
