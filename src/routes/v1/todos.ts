@@ -1,8 +1,11 @@
 import express, { Router } from "express";
-import { getTodosReadController } from "../../controllers/v1/read/todos";
+import { getAllTodosController, getTodosByIdController } from "../../controllers/v1/read/todos";
 
 const router: Router = Router();
 
-router.get("/todos", getTodosReadController);
+router.get("/todos", getAllTodosController);
+router.get("/todos/:todoId", getTodosByIdController);
+
+
 
 export default router;

@@ -1,20 +1,34 @@
 import express from "express";
-import { getAllTodos } from "../../../models/v1/todos";
+import { getAllTodosModel, getTodoByIdModel } from "../../../models/v1/todos";
+import { errorResponse, successResponse } from "../../../helpers/responseHandler";
+import { HttpStatusCode } from "../../../helpers/httpStatusCodes";
 
-export const getTodosReadController = async (req: express.Request, res: express.Response) => {
+export const getAllTodosController = async (req: express.Request, res: express.Response, next: express.NextFunction) => {
+  try {
+    const todos = await getAllTodosModel(req, res);
 
-  const todos = await getAllTodos(req, res);
+    if (todos.length === 0) {
+      return successResponse(res, HttpStatusCode.NO_CONTENT, "No todos found.", null);
+    }
 
-  if (!todos) {
-    res.status(500).send("Internal server error");
+    return successResponse(res, HttpStatusCode.OK, "Todos fetched successfully.", todos);
+  } catch (err) {
+    next(err);
   }
+};
 
-  if (todos.length === 0) {
-    res.status(404).send("No todos found");
+export const getTodosByIdController = async (req: express.Request, res: express.Response, next: express.NextFunction) => {
+  const { todoId } = req.params;
+  try {
+    const todo = await getTodoByIdModel(req, res);
+
+    if (!todo.length) {
+      return successResponse(res, HttpStatusCode.NO_CONTENT, "No todo found.", {});
+    }
+
+    return successResponse(res, HttpStatusCode.OK, "Todo fetched successfully.", todo);
+  } catch (err) {
+    console.error("Error fetching todo:", err);
+    next(err);
   }
-
-  if (todos) {
-    res.send(todos);
-  }
-
 };
